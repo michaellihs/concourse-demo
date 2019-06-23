@@ -11,5 +11,4 @@ jobs:
     plan:
       - get: demo-repo
       - task: hello-world
-        image: busy-box
         file: demo-repo/tutorial-3/hello-world.yml
