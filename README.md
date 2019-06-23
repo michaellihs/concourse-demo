@@ -1,6 +1,8 @@
 Concourse Demo
 ==============
 
+This repository contains some tutorials for my [Concourse Presentation](https://github.com/michaellihs/presentation-concourse-devopska-2019-06-26) for the DevOps Meetup in Karlsruhe, June 26th 2019.
+
 Prerequisites
 -------------
 
