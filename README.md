@@ -150,7 +150,7 @@ fly -t demo e -c hello-world.yml -i demo-repo=../
 4th Tutorial: Parametrized Tasks
 --------------------------------
 
-Parameters in Concourse are "injected" into your task scripts as environment parameters.
+Parameters in Concourse pipelines are "injected" into your task scripts as environment variables.
 
 Here is a parametrized pipeline version of our previous tutorial (mind the `params` section in the `task` config):
 
@@ -194,11 +194,70 @@ run:
   path: demo-repo/tutorial-4/hello-params.sh
 ```
 
+Within your shell script, you can access the `GREETING` parameter as an env var:
+
+```bash
+#!/bin/sh
+
+echo "${GREETING}"
+```
+
 We use the very same commands like in the previous tutorials to setup the pipeline.
+
+> You might not immediately see the benefit of externalizing tasks - but as one side effect, this allows you to re-use tasks across multiple pipeline and finally create libraries for your pipeline tasks.
 
 
 5th Tutorial: Use Variables and Settings
 ----------------------------------------
+
+In comparison to parameters shown in the previous tutorial, variables are placeholders in your pipeline yaml files, that are filled when you upload your pipeline to concourse via `fly`. Apply a variable by using the `((VARIABLE_NAME))` syntax:
+
+```yaml
+---
+resources:
+  - name: demo-repo
+    type: git
+    source:
+      uri: https://github.com/michaellihs/concourse-demo.git
+      branch: master
+  - name: busy-box
+    type: docker-image
+    source: {repository: busybox}
+
+jobs:
+  - name: hello-settings
+    plan:
+      - get: demo-repo
+      - get: busy-box
+      - task: hello-parameters
+        image: busy-box
+        file: demo-repo/tutorial-5/hello-settings.yml
+        params:
+          GREETING: ((greeting))
+```
+
+You now have 2 choices to fill this placeholder:
+
+1. by using `fly`'s ` --var=[NAME=STRING]` option
+2. by creating another yaml file with key value pairs and reference it via `fly`'s `--load-vars-from=` option
+
+we go with the second option and create a file `settings.yml` with the following content
+
+```yaml
+greeting: "hello settings"
+```
+
+we now use the modified `fly` command to upload the pipeline:
+
+```bash
+fly --target=demo set-pipeline \
+    --non-interactive \
+    --pipeline=tutorial-5 \
+    --load-vars-from=settings.yml \
+    --config=pipeline.yml
+```
+
+> You can use the `--load-vars-from=` option multiple times and use it to build a chain of overrides for you placeholders, e.g. to create Ansible-style settings override for more complex environments where you merge instance-specific settings over stage-specific settings over global settings...
 
 
 6th Tutorial: Use Credentials from Vault

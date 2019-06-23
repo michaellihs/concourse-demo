@@ -1,0 +1,11 @@
+---
+platform: linux
+
+inputs:
+  - name: demo-repo
+
+params:
+  GREETING:
+
+run:
+  path: demo-repo/tutorial-5/hello-settings.sh

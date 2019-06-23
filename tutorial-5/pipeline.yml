@@ -10,12 +10,12 @@ resources:
     source: {repository: busybox}
 
 jobs:
-  - name: hello-parameters
+  - name: hello-settings
     plan:
       - get: demo-repo
       - get: busy-box
       - task: hello-parameters
         image: busy-box
-        file: demo-repo/tutorial-4/hello-params.yml
+        file: demo-repo/tutorial-5/hello-settings.yml
         params:
-          GREETING: "hello parameters"
+          GREETING: ((greeting))
