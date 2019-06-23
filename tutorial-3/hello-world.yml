@@ -5,4 +5,7 @@ inputs:
   - name: demo-repo
 
 run:
-  path: demo-repo/tutorial-3/hello-world.sh
+  #path: demo-repo/tutorial-3/hello-world.sh
+  path: ls
+  args:
+    - -la
