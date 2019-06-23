@@ -9,3 +9,4 @@ run:
   path: ls
   args:
     - -la
+    - demo-repo
