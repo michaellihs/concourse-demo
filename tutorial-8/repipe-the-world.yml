@@ -1,0 +1,8 @@
+---
+platform: linux
+
+inputs:
+  - name: demo-repo
+
+run:
+  path: demo-repo/tutorial-8/repipe-the-world.sh

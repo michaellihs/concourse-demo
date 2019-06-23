@@ -1,0 +1,19 @@
+---
+resources:
+  - name: demo-repo
+    type: git
+    source:
+      uri: https://github.com/michaellihs/concourse-demo.git
+      branch: master
+  - name: ubuntu
+    type: docker-image
+    source: {repository: ubuntu}
+
+jobs:
+  - name: repipe-the-world
+    plan:
+      - get: demo-repo
+      - get: ubuntu
+      - task: repipe-the-world
+        image: ubuntu
+        file: demo-repo/tutorial-8/repipe-the-world.yml

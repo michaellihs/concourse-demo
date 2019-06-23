@@ -264,7 +264,28 @@ fly --target=demo set-pipeline \
 ----------------------------------------
 
 
-7th Tutorial: Use Meta Pipeline
+
+7th Tutorial: Building a Docker Image
+-------------------------------------
+
+
+
+8th Tutorial: Use Meta Pipeline
 -------------------------------
 
+As the *Meta Pipeline* we denote a pipeline that sets up other pipelines in Concourse. In this case, the meta pipeline in tutorial 8 creates all the pipelines within this demo repository besides the pipeline for tutorial 8 itself.
 
+To set up the pipeline, run
+
+```bash
+cd tutorial-8
+./setup-pipeline.sh
+```
+
+To make sure that the pipeline really worked, delete all pipelines (but the meta pipeline) via
+
+```bash
+for i in $(seq 1 7); do
+    fly -t demo destroy-pipeline -p tutorial-${i}
+done
+```
