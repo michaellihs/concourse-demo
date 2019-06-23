@@ -18,4 +18,5 @@ jobs:
       - task: hello-world
         image: busy-box
         config:
-          run: demo-repo/tutorial-3/hello-world.sh
+          platform: linux
+          file: demo-repo/tutorial-3/hello-world.yml
