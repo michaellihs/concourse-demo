@@ -99,7 +99,51 @@ We will know create a pipeline that uses the content of a git repository as an i
 Here's our pipeline:
 
 ```yaml
+---
+resources:
+  - name: demo-repo
+    type: git
+    source:
+      uri: https://github.com/michaellihs/concourse-demo.git
+      branch: master
+
+jobs:
+  - name: hello-world
+    plan:
+      - get: demo-repo
+      - task: hello-world
+        image: busy-box
+        file: demo-repo/tutorial-3/hello-world.yml
  
+```
+
+here is our `task` file:
+
+```yaml
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: busybox}
+
+inputs:
+  - name: demo-repo
+
+run:
+  path: demo-repo/tutorial-3/hello-world.sh
+```
+
+We use the very same commands as in tutorial-2 to set up our pipeline.
+
+
+### Bonus Round: Run Tasks directly
+
+Sometimes, when you debug your pipeline, you want to run only single tasks until they do what you want them to do. Therefore it can be helpful run the task "stand-alone", i.e. without making many debug-commits. The following `fly` command can help you here (requires previous login to Concourse):
+
+```bash
+cd tutorial-3
+fly -t demo e -c hello-world.yml -i demo-repo=../
 ```
 
 
@@ -115,4 +159,9 @@ TODO show how to use tasks from an external repository
 
 6th Tutorial: Use Credentials from Vault
 ----------------------------------------
+
+
+7th Tutorial: Use Meta Pipeline
+-------------------------------
+
 

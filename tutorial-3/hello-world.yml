@@ -1,12 +1,16 @@
 ---
 platform: linux
 
+image_resource:
+  type: docker-image
+  source: {repository: busybox}
+
 inputs:
   - name: demo-repo
 
 run:
-  #path: demo-repo/tutorial-3/hello-world.sh
-  path: ls
-  args:
-    - -la
-    - demo-repo
+  path: demo-repo/tutorial-3/hello-world.sh
+  #path: ls
+  #args:
+  #  - -la
+  #  - demo-repo/tutorial-3
