@@ -147,10 +147,54 @@ fly -t demo e -c hello-world.yml -i demo-repo=../
 ```
 
 
-4th Tutorial: Re-use of Tasks
------------------------------
+4th Tutorial: Parametrized Tasks
+--------------------------------
 
-TODO show how to use tasks from an external repository
+Parameters in Concourse are "injected" into your task scripts as environment parameters.
+
+Here is a parametrized pipeline version of our previous tutorial (mind the `params` section in the `task` config):
+
+```yaml
+---
+resources:
+  - name: demo-repo
+    type: git
+    source:
+      uri: https://github.com/michaellihs/concourse-demo.git
+      branch: master
+  - name: busy-box
+    type: docker-image
+    source: {repository: busybox}
+
+jobs:
+  - name: hello-world
+    plan:
+      - get: demo-repo
+      - get: busy-box
+      - task: hello-world
+        image: busy-box
+        file: demo-repo/tutorial-4/hello-params.yml
+        params:
+          GREETING: "hello parameters"
+```
+
+here's the task yaml:
+
+```yaml
+---
+platform: linux
+
+inputs:
+  - name: demo-repo
+
+params:
+  GREETING:
+
+run:
+  path: demo-repo/tutorial-4/hello-params.sh
+```
+
+We use the very same commands like in the previous tutorials to setup the pipeline.
 
 
 5th Tutorial: Use Variables and Settings
