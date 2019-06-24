@@ -1,0 +1,22 @@
+---
+resources:
+  - name: resource-git
+    type: git
+    source:
+      uri: https://github.com/michaellihs/rocketchat-notification-resource.git
+      branch: master
+  - name: resource-image
+    type: docker-image
+    source:
+      repository: ((docker_repo))/rocket-notify-resource
+      username: ((docker_user))
+      password: ((docker_password))
+
+jobs:
+  - name: build-rocket-notify-resource
+    plan:
+      - get: resource-git
+        trigger: true
+      - put: resource-image
+        params:
+          build: resource-git

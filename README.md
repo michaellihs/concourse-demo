@@ -10,8 +10,8 @@ Prerequisites
 * Docker Compose
 
 
-Spin up local Concourse with Docker Compose
--------------------------------------------
+Spin up local Concourse and Vault with Docker Compose
+-----------------------------------------------------
 
 ```bash
 docker compose up -d
@@ -20,6 +20,21 @@ docker compose up -d
 Afterwards open [http://localhost:8080](http://localhost:8080) and login with user `test` and password `test`.
 
 **Caution** do not use this setup in production, since we are using non-secret ssh keys which are checked-in to this repository.
+
+
+### Spin up local Vault with Docker Compose
+
+``` bash
+docker exec -it demo_vault_1 /bin/sh -c 'export VAULT_CACERT=/vault/certs/vault-ca.crt; /bin/vault operator init -key-shares=1 -key-threshold=1'
+
+# --> copy the token and the unseal key to a safe place
+
+docker exec -it demo_vault_1 /bin/sh -c 'vault operator unseal -tls-skip-verify'
+# --> paste the unseal key
+
+
+docker exec -it demo_vault_1 /bin/sh -c 'vault login -tls-skip-verify'
+```
 
 
 1st Tutorial: Download `fly`cli and login to Concourse
