@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+# see https://github.com/hashicorp/best-practices/blob/master/packer/config/vault/scripts/setup_vault.sh
+
 cleanup() {
     shred /tmp/vault-keys
 }
 
 trap cleanup INT TERM QUIT EXIT
+
 
 # Initialize Vault
 docker exec -it demo_vault_1 /bin/sh -c 'export VAULT_CACERT=/vault/certs/vault-ca.crt; /bin/vault operator init -key-shares=1 -key-threshold=1 -format=json' > /tmp/vault-keys
