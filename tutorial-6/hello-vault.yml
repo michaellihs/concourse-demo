@@ -1,0 +1,12 @@
+---
+platform: linux
+
+inputs:
+  - name: demo-repo
+
+params:
+  GREETING:
+  ANOTHER_GREETING:
+
+run:
+  path: demo-repo/tutorial-6/hello-vault.sh

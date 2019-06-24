@@ -1,0 +1,22 @@
+---
+resources:
+  - name: demo-repo
+    type: git
+    source:
+      uri: https://github.com/michaellihs/concourse-demo.git
+      branch: master
+  - name: busy-box
+    type: docker-image
+    source: {repository: busybox}
+
+jobs:
+  - name: hello-parameters
+    plan:
+      - get: demo-repo
+      - get: busy-box
+      - task: hello-parameters
+        image: busy-box
+        file: demo-repo/tutorial-6/hello-vault.yml
+        params:
+          GREETING: "((vault-param-1.key))"
+          ANOTHER_GREETING: "((vault-param-2.key))"
