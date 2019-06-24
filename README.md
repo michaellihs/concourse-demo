@@ -10,6 +10,32 @@ Prerequisites
 * Docker Compose
 
 
+[TOC]: # "## Table of Contents"
+
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Disclaimer](#disclaimer)
+- [Spin up local Concourse and Vault with Docker Compose](#spin-up-local-concourse-and-vault-with-docker-compose)
+    - [Spin up local Vault with Docker Compose](#spin-up-local-vault-with-docker-compose)
+- [Tutorial 1 - Download `fly`cli and login to Concourse](#tutorial-1---download-flycli-and-login-to-concourse)
+- [Tutorial 2 - Upload your first Pipeline](#tutorial-2---upload-your-first-pipeline)
+- [Tutorial 3 - Create a Pipeline with an Input](#tutorial-3---create-a-pipeline-with-an-input)
+    - [Bonus Round: Run Tasks directly](#bonus-round-run-tasks-directly)
+- [Tutorial 4 - Parametrized Tasks](#tutorial-4---parametrized-tasks)
+- [Tutorial 5 - Use Variables and Settings](#tutorial-5---use-variables-and-settings)
+- [Tutorial 6 - Use Credentials from Vault](#tutorial-6---use-credentials-from-vault)
+- [Tutorial 7 - Building a Docker Image](#tutorial-7---building-a-docker-image)
+- [Tutorial 8 - Use Meta Pipeline](#tutorial-8---use-meta-pipeline)
+
+
+Disclaimer
+----------
+
+> This repository contains keys and certificates for Concourse and HashiCorp Vault. This is due to convenience reasons to enable a fast setup for demo purposes. You should never bring this into production, since certificates and keys are supposed to be secret.
+>
+> Also the unsealing process for Vault is a convenience hack and nothing that should make it into production!
+
+
 Spin up local Concourse and Vault with Docker Compose
 -----------------------------------------------------
 
@@ -19,26 +45,11 @@ docker compose up -d
 
 Afterwards open [http://localhost:8080](http://localhost:8080) and login with user `test` and password `test`.
 
-**Caution** do not use this setup in production, since we are using non-secret ssh keys which are checked-in to this repository.
+> **Caution** do not use this setup in production, since we are using non-secret ssh keys which are checked-in to this repository.
 
 
-### Spin up local Vault with Docker Compose
-
-``` bash
-docker exec -it demo_vault_1 /bin/sh -c 'export VAULT_CACERT=/vault/certs/vault-ca.crt; /bin/vault operator init -key-shares=1 -key-threshold=1'
-
-# --> copy the token and the unseal key to a safe place
-
-docker exec -it demo_vault_1 /bin/sh -c 'vault operator unseal -tls-skip-verify'
-# --> paste the unseal key
-
-
-docker exec -it demo_vault_1 /bin/sh -c 'vault login -tls-skip-verify'
-```
-
-
-1st Tutorial: Download `fly`cli and login to Concourse
-------------------------------------------------------
+Tutorial 1 - Download `fly`cli and login to Concourse
+-----------------------------------------------------
 
 Download `fly` CLI with
 
@@ -67,8 +78,8 @@ fly -t demo pipelines
 > Normally `/usr/local/bin` would be a good place to download the fly cli locally. Since we are working with multiple Concourse versions in parallel, we put the corresponding fly binary into the root of the project folder and reference this one from within all our scripts in the project. An alternative would be the usage of the [`fly sync`](https://concourse-ci.org/fly.html#fly-sync) command.
 
 
-2nd Tutorial: Upload your first Pipeline
-----------------------------------------
+Tutorial 2 - Upload your first Pipeline
+---------------------------------------
 
 Our first pipeline contains only a single job with a single task that outputs "Hello World":
 
@@ -108,8 +119,8 @@ fly --target=demo unpause-pipeline -p tutorial-2
 Now go to the Concourse UI in your browser again and after login, you will see a first pipeline. You can directly access it via [http://localhost:8080/teams/main/pipelines/tutorial-2](http://localhost:8080/teams/main/pipelines/tutorial-2)
 
 
-3rd Tutorial: Create a Pipeline with an Input
----------------------------------------------
+Tutorial 3 - Create a Pipeline with an Input
+--------------------------------------------
 
 We will know create a pipeline that uses the content of a git repository as an input for a task. For simplicity, we will use this repository and run a simple shell script within it.
 
@@ -164,8 +175,8 @@ fly -t demo e -c hello-world.yml -i demo-repo=../
 ```
 
 
-4th Tutorial: Parametrized Tasks
---------------------------------
+Tutorial 4 - Parametrized Tasks
+-------------------------------
 
 Parameters in Concourse pipelines are "injected" into your task scripts as environment variables.
 
@@ -224,8 +235,8 @@ We use the very same commands like in the previous tutorials to setup the pipeli
 > You might not immediately see the benefit of externalizing tasks - but as one side effect, this allows you to re-use tasks across multiple pipeline and finally create libraries for your pipeline tasks.
 
 
-5th Tutorial: Use Variables and Settings
-----------------------------------------
+Tutorial 5 - Use Variables and Settings
+---------------------------------------
 
 In comparison to parameters shown in the previous tutorial, variables are placeholders in your pipeline yaml files, that are filled when you upload your pipeline to concourse via `fly`. Apply a variable by using the `((VARIABLE_NAME))` syntax:
 
@@ -277,8 +288,8 @@ fly --target=demo set-pipeline \
 > You can use the `--load-vars-from=` option multiple times and use it to build a chain of overrides for you placeholders, e.g. to create Ansible-style settings override for more complex environments where you merge instance-specific settings over stage-specific settings over global settings...
 
 
-6th Tutorial: Use Credentials from Vault
-----------------------------------------
+Tutorial 6 - Use Credentials from Vault
+---------------------------------------
 
 In this tutorial we gonna spin up a local Vault instance and make Concourse read credentials from Vault. Remember that the path in which Concourse searches for credentials like `((foo_param))` in Vault looks like
 
@@ -336,8 +347,8 @@ To run the tutorial:
     ```
 
 
-7th Tutorial: Building a Docker Image
--------------------------------------
+Tutorial 7 - Building a Docker Image
+------------------------------------
 
 In this tutorial, we show the simplest pipeline to build a Docker image with Concourse. We build a Docker image for the [RocketChat Notification Resource](https://github.com/michaellihs/rocketchat-notification-resource). The source code is pulled from GitHub and the built Docker image is pushed to Dockerhub.
 
@@ -378,8 +389,8 @@ cd tutorial-7
 ```
 
 
-8th Tutorial: Use Meta Pipeline
--------------------------------
+Tutorial 8 - Use Meta Pipeline
+------------------------------
 
 As the *Meta Pipeline* we denote a pipeline that sets up other pipelines in Concourse. In this case, the meta pipeline in tutorial 8 creates all the pipelines within this demo repository besides the pipeline for tutorial 8 itself.
 
