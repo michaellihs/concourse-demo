@@ -6,7 +6,7 @@ This repository contains some tutorials for my [Concourse Presentation](https://
 Prerequisites
 -------------
 
-* Docker engine
+* Docker Engine
 * Docker Compose
 
 
@@ -280,11 +280,102 @@ fly --target=demo set-pipeline \
 6th Tutorial: Use Credentials from Vault
 ----------------------------------------
 
+In this tutorial we gonna spin up a local Vault instance and make Concourse read credentials from Vault. Remember that the path in which Concourse searches for credentials like `((foo_param))` in Vault looks like
+
+```
+/concourse/TEAM_NAME/PIPELINE_NAME/foo_param
+/concourse/TEAM_NAME/foo_param
+```
+
+Concourse will default for the field `value`, when you use a different field in Vault, e.g. `foo`, you can specify the field to grab via `.` syntax, e.g. `((param.foo))`.
+
+Our `jobs`-section sample pipeline looks like
+
+```yaml
+jobs:
+  - name: hello-parameters
+    plan:
+      - get: demo-repo
+      - get: busy-box
+      - task: hello-parameters
+        image: busy-box
+        file: demo-repo/tutorial-6/hello-vault.yml
+        params:
+          GREETING: "((vault-param-1.val))"
+          ANOTHER_GREETING: "((vault-param-2.value))"
+```
+
+To run the tutorial:
+
+1. Use the provided `docker-compose.yml` to spin up a containerized Vault and Concourse connected to it
+
+    ```bash
+    docker-compose up -d
+    cd tutorial-6
+    ./setup-vault.sh
+    ./write-values-to-vault.sh
+    ./setup-pipeline.sh
+    ```
+
+2. Initialize & unseal Vault via (within `tutorial-6`)
+
+    ```bash
+    ./setup-vault.sh
+    ```
+
+3. Write some sample values to Vault (within `tutorial-6`)
+
+    ```bash
+    ./write-values-to-vault.sh
+    ```
+
+4. Setup the pipeline (within `tutorial-6`)
+
+    ```bash
+    ./setup-pipeline.sh
+    ```
 
 
 7th Tutorial: Building a Docker Image
 -------------------------------------
 
+In this tutorial, we show the simplest pipeline to build a Docker image with Concourse. We build a Docker image for the [RocketChat Notification Resource](https://github.com/michaellihs/rocketchat-notification-resource). The source code is pulled from GitHub and the built Docker image is pushed to Dockerhub.
+
+Here's the pipeline:
+
+```yaml
+---
+resources:
+  - name: resource-git
+    type: git
+    source:
+      uri: https://github.com/michaellihs/rocketchat-notification-resource.git
+      branch: master
+  - name: resource-image
+    type: docker-image
+    source:
+      repository: ((docker_repo))/rocket-notify-resource
+      username: ((docker_user))
+      password: ((docker_password))
+
+jobs:
+  - name: build-rocket-notify-resource
+    plan:
+      - get: resource-git
+        trigger: true
+      - put: resource-image
+        params:
+          build: resource-git
+```
+
+To setup the pipeline, run
+
+```bash
+export DOCKER_PASSWORD='s3cr3t'
+
+cd tutorial-7
+./setup-pipeline.sh
+```
 
 
 8th Tutorial: Use Meta Pipeline
@@ -302,7 +393,7 @@ cd tutorial-8
 To make sure that the pipeline really worked, delete all pipelines (but the meta pipeline) via
 
 ```bash
-for i in $(seq 1 7); do
+for i in $(seq 2 7); do
     fly -t demo destroy-pipeline -p tutorial-${i}
 done
 ```

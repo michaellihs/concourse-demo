@@ -23,3 +23,6 @@ docker exec -it demo_vault_1 /bin/sh -c "export VAULT_CACERT=/vault/certs/vault-
 
 # Write Vault policy to enable read access for Concourse
 docker exec -it demo_vault_1 /bin/sh -c "export VAULT_CACERT=/vault/certs/vault-ca.crt; /bin/vault policy write concourse /vault/config/concourse-policy.hcl"
+
+# Create K/V store for Concourse credentials
+docker exec -it demo_vault_1 /bin/sh -c "vault secrets enable -version=1 -path=concourse -tls-skip-verify kv"

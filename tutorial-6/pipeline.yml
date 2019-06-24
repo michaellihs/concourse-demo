@@ -18,5 +18,5 @@ jobs:
         image: busy-box
         file: demo-repo/tutorial-6/hello-vault.yml
         params:
-          GREETING: "((vault-param-1.key))"
-          ANOTHER_GREETING: "((vault-param-2.key))"
+          GREETING: "((vault-param-1.val))"
+          ANOTHER_GREETING: "((vault-param-2.value))"
