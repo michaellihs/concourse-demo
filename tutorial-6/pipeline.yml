@@ -19,4 +19,4 @@ jobs:
         file: demo-repo/tutorial-6/hello-vault.yml
         params:
           GREETING: "((vault-param-1.val))"
-          ANOTHER_GREETING: "((vault-param-2.value))"
+          ANOTHER_GREETING: "((vault-param-2))"
