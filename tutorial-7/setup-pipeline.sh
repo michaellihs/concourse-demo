@@ -26,16 +26,16 @@ docker_user: ${DOCKER_USER}
 docker_password: ${DOCKER_PASSWORD}
 EOF
 
-../fly --target=concourse login \
+../fly --target=demo login \
     --concourse-url="http://${CONCOURSE_FQDN}:8080" \
     --username=${CONCOURSE_USER} \
     --password=${CONCOURSE_PASSWORD} \
     --team-name=main
 
-../fly --target=concourse set-pipeline \
+../fly --target=demo set-pipeline \
     --non-interactive \
     --pipeline=${PIPELINE_NAME} \
     --load-vars-from=${vars_file} \
     --config=pipeline.yml
 
-../fly --target=rocket-notify unpause-pipeline -p ${PIPELINE_NAME}
+../fly --target=demo unpause-pipeline -p ${PIPELINE_NAME}
