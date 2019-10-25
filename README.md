@@ -7,7 +7,7 @@ Prerequisites
 -------------
 
 * Docker Engine
-* Docker Compose
+* Docker-compose
 
 
 [TOC]: # "## Table of Contents"
@@ -40,7 +40,7 @@ Spin up local Concourse and Vault with Docker Compose
 -----------------------------------------------------
 
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 
 Afterwards open [http://localhost:8080](http://localhost:8080) and login with user `test` and password `test`.
