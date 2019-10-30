@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: concourse_pass
 
   web:
-    image: concourse/concourse
+    image: concourse/concourse:5.6.0
     command: web
     links: [db]
     depends_on: [db]
