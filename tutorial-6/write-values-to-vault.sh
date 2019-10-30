@@ -10,7 +10,7 @@ write_vault() {
     key=$2
     secret=$3
 
-    docker exec -it demo_vault_1 /bin/sh -c "vault kv put -tls-skip-verify concourse/${path} ${key}=${secret}"
+    docker exec -it concourse-demo_vault_1 /bin/sh -c "vault kv put -tls-skip-verify concourse/${path} ${key}=${secret}"
 }
 
 

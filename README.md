@@ -17,7 +17,7 @@ Prerequisites
 - [Disclaimer](#disclaimer)
 - [Spin up local Concourse and Vault with Docker Compose](#spin-up-local-concourse-and-vault-with-docker-compose)
     - [Spin up local Vault with Docker Compose](#spin-up-local-vault-with-docker-compose)
-- [Tutorial 1 - Download `fly`cli and login to Concourse](#tutorial-1---download-flycli-and-login-to-concourse)
+- [Tutorial 1 - Download `fly` cli and login to Concourse](#tutorial-1---download-fly-cli-and-login-to-concourse)
 - [Tutorial 2 - Upload your first Pipeline](#tutorial-2---upload-your-first-pipeline)
 - [Tutorial 3 - Create a Pipeline with an Input](#tutorial-3---create-a-pipeline-with-an-input)
     - [Bonus Round: Run Tasks directly](#bonus-round-run-tasks-directly)
@@ -40,7 +40,7 @@ Spin up local Concourse and Vault with Docker Compose
 -----------------------------------------------------
 
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 
 Afterwards open [http://localhost:8080](http://localhost:8080) and login with user `test` and password `test`.
@@ -48,8 +48,8 @@ Afterwards open [http://localhost:8080](http://localhost:8080) and login with us
 > **Caution** do not use this setup in production, since we are using non-secret ssh keys which are checked-in to this repository.
 
 
-Tutorial 1 - Download `fly`cli and login to Concourse
------------------------------------------------------
+Tutorial 1 - Download `fly` cli and login to Concourse
+------------------------------------------------------
 
 Download `fly` CLI with
 
@@ -83,22 +83,20 @@ Tutorial 2 - Upload your first Pipeline
 
 Our first pipeline contains only a single job with a single task that outputs "Hello World":
 
-```yaml
----
-jobs:
-  - name: hello-world
-    plan:
-      - task: hello-world
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source: {repository: busybox}
-          run:
-            path: echo
-            args:
-              - hello world
-```
+    ---
+    jobs:
+      - name: hello-world
+        plan:
+          - task: hello-world
+            config:
+              platform: linux
+              image_resource:
+                type: docker-image
+                source: {repository: busybox}
+              run:
+                path: echo
+                args:
+                  - hello world
 
 we use `fly`'s `set-pipeline` command to upload the pipeline to Concourse:
 
