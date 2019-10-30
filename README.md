@@ -7,7 +7,7 @@ Prerequisites
 -------------
 
 * Docker Engine
-* Docker-compose
+* Docker Compose
 
 
 [TOC]: # "## Table of Contents"
